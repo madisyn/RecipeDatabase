@@ -1,5 +1,6 @@
 import java.awt.EventQueue;
 import java.sql.*;
+import java.util.*;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -9,12 +10,14 @@ import java.awt.BorderLayout;
 import java.awt.Font;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JTable;
 import javax.swing.JScrollPane;
+import net.proteanit.sql.DbUtils;
 
 
 public class RecipeDatabase {
@@ -48,10 +51,16 @@ public class RecipeDatabase {
 	public RecipeDatabase() {
 		initialize();
 		Connect();
+		table_load();
 	}
 
 	Connection con;
 	PreparedStatement pst;
+	ResultSet rs;
+	ResultSetMetaData rd;
+	DefaultTableModel model;
+	
+	//private JTextField txtID;
 	
 	public void Connect() {
 		try {
@@ -63,6 +72,21 @@ public class RecipeDatabase {
 			ex.printStackTrace();
 		}
 	}
+	
+
+	public void table_load()
+	    {
+	     try
+	     {
+	    pst = con.prepareStatement("select * from recipes");
+	    rs = pst.executeQuery();
+	    table.setModel(DbUtils.resultSetToTableModel(rs));
+	}
+	     catch (SQLException e)
+	     {
+	     e.printStackTrace();
+	  }
+	    }
 	
 	
 	
@@ -119,20 +143,21 @@ public class RecipeDatabase {
 		JButton btnSave = new JButton("Save");
 		btnSave.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String dname, mtype, dif;
+				String dname, mtype;
+				int dif;
 				
 				dname = txtdname.getText(); 
 				mtype = txtmtype.getText();
-				dif = txtdiff.getText();
+				dif = Integer.parseInt(txtdiff.getText());
 				
 				try {
-					pst = con.prepareStatement("insert into recipes(name, ype, difficulty)values(?, ?, ?)" );
+					pst = con.prepareStatement("insert into recipes(name, type, difficulty)values(?, ?, ?)" );
 					pst.setString(1, dname);
 					pst.setString(2, mtype);
-					pst.setString(3,  dif);
+					pst.setInt(3,  dif);
 					pst.executeUpdate();
 					JOptionPane.showMessageDialog(null, "Record Added!");
-					// table_load();
+					table_load();
 					txtdname.setText("");
 					txtmtype.setText("");
 					txtdiff.setText("");
@@ -184,6 +209,7 @@ public class RecipeDatabase {
 		panel_1.add(txtDishID);
 		
 		JButton btnUpdate = new JButton("Update");
+
 		btnUpdate.setBounds(412, 340, 89, 23);
 		frame.getContentPane().add(btnUpdate);
 		
