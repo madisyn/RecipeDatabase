@@ -18,6 +18,8 @@ import java.awt.event.ActionEvent;
 import javax.swing.JTable;
 import javax.swing.JScrollPane;
 import net.proteanit.sql.DbUtils;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 
 public class RecipeDatabase {
@@ -204,12 +206,44 @@ public class RecipeDatabase {
 		panel_1.add(labelDishID);
 		
 		txtDishID = new JTextField();
+
 		txtDishID.setBounds(86, 21, 144, 20);
 		txtDishID.setColumns(10);
 		panel_1.add(txtDishID);
 		
 		JButton btnUpdate = new JButton("Update");
-
+		btnUpdate.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				String dname, mtype;
+				int dif, id;
+				
+				id = Integer.parseInt(txtDishID.getText());
+				dname = txtdname.getText(); 
+				mtype = txtmtype.getText();
+				dif = Integer.parseInt(txtdiff.getText());
+				
+				try {
+					pst = con.prepareStatement("update recipes set name  =? , type =?, difficulty =? where id = ?");
+					pst.setString(1, dname);
+					pst.setString(2, mtype);
+					pst.setInt(3,  dif);
+					pst.setInt(4,  id);
+					pst.executeUpdate();
+					
+					JOptionPane.showMessageDialog(null, "Record Updated!");
+					table_load();
+					txtdname.setText("");
+					txtmtype.setText("");
+					txtdiff.setText("");
+					txtdname.requestFocus();
+				}
+				catch(SQLException el){
+					el.printStackTrace();
+				}
+				
+			}
+		});
 		btnUpdate.setBounds(412, 340, 89, 23);
 		frame.getContentPane().add(btnUpdate);
 		
