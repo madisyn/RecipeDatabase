@@ -60,7 +60,7 @@ public class RecipeDatabase {
 	ResultSetMetaData rd;
 	DefaultTableModel model;
 	
-	//private JTextField txtID;
+	//private JTextField txtID;s
 	
 	public void Connect() {
 		try {
@@ -73,19 +73,30 @@ public class RecipeDatabase {
 	}
 	
 
-	public void table_load()
-	    {
+	public void table_load(){
 	     try
 	     {
 	    pst = con.prepareStatement("select * from recipes");
 	    rs = pst.executeQuery();
 	    table.setModel(DbUtils.resultSetToTableModel(rs));
-	}
+	     }
 	     catch (SQLException e)
 	     {
 	     e.printStackTrace();
-	  }
+	     }
+	}
+	
+	public static boolean isNumeric(String strNum) {
+	    if (strNum == null) {
+	        return false;
 	    }
+	    try {
+	        double d = Double.parseDouble(strNum);
+	    } catch (NumberFormatException nfe) {
+	        return false;
+	    }
+	    return true;
+	}
 	
 	
 	
@@ -142,12 +153,19 @@ public class RecipeDatabase {
 		JButton btnSave = new JButton("Save");
 		btnSave.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String dname, mtype;
+				
+				if(!isNumeric(txtdiff.getText())){
+					JOptionPane.showMessageDialog(null, "Need a valid difficulty!");
+				}
+				else {
+					String dname, mtype;
 				int dif;
 				
 				dname = txtdname.getText(); 
 				mtype = txtmtype.getText();
 				dif = Integer.parseInt(txtdiff.getText());
+				
+				
 				
 				try {
 					pst = con.prepareStatement("insert into recipes(name, type, difficulty)values(?, ?, ?)" );
@@ -165,8 +183,8 @@ public class RecipeDatabase {
 				catch(SQLException el){
 					el.printStackTrace();
 				}
+				}
 
-				
 			}
 		});
 		btnSave.setBounds(20, 287, 89, 23);
@@ -257,33 +275,39 @@ public class RecipeDatabase {
 		JButton btnUpdate = new JButton("Update");
 		btnUpdate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
-				String dname, mtype;
-				int dif, id;
-				
-				id = Integer.parseInt(txtDishID.getText());
-				dname = txtdname.getText(); 
-				mtype = txtmtype.getText();
-				dif = Integer.parseInt(txtdiff.getText());
-				
-				try {
-					pst = con.prepareStatement("update recipes set name  =? , type =?, difficulty =? where id = ?");
-					pst.setString(1, dname);
-					pst.setString(2, mtype);
-					pst.setInt(3,  dif);
-					pst.setInt(4,  id);
-					pst.executeUpdate();
+				if(!isNumeric(txtdiff.getText())){
+					JOptionPane.showMessageDialog(null, "Need a valid difficulty!");
+				}
+				else {
+					String dname, mtype;
+					int dif, id;
 					
-					JOptionPane.showMessageDialog(null, "Record Updated!");
-					table_load();
-					txtdname.setText("");
-					txtmtype.setText("");
-					txtdiff.setText("");
-					txtdname.requestFocus();
+					id = Integer.parseInt(txtDishID.getText());
+					dname = txtdname.getText(); 
+					mtype = txtmtype.getText();
+					dif = Integer.parseInt(txtdiff.getText());
+					
+					try {
+						pst = con.prepareStatement("update recipes set name  =? , type =?, difficulty =? where id = ?");
+						pst.setString(1, dname);
+						pst.setString(2, mtype);
+						pst.setInt(3,  dif);
+						pst.setInt(4,  id);
+						pst.executeUpdate();
+						
+						JOptionPane.showMessageDialog(null, "Record Updated!");
+						table_load();
+						txtdname.setText("");
+						txtmtype.setText("");
+						txtdiff.setText("");
+						txtdname.requestFocus();
+					}
+					catch(SQLException el){
+						el.printStackTrace();
+					}
+				
 				}
-				catch(SQLException el){
-					el.printStackTrace();
-				}
+				
 				
 			}
 		});
