@@ -1,12 +1,10 @@
 import java.awt.EventQueue;
 import java.sql.*;
-import java.util.*;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
-import java.awt.BorderLayout;
 import java.awt.Font;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
@@ -68,7 +66,6 @@ public class RecipeDatabase {
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
 			con = DriverManager.getConnection("jdbc:mysql://localhost/recipedatabase", "root", "");
-			JOptionPane.showMessageDialog(null, "Connection yay!"); 
 		}
 		catch(Exception ex) {
 			ex.printStackTrace();
@@ -178,7 +175,10 @@ public class RecipeDatabase {
 		JButton btnClear = new JButton("Clear");
 		btnClear.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
+				txtdname.setText("");
+				txtmtype.setText("");
+				txtdiff.setText("");
+				txtdname.requestFocus();
 			}
 		});
 		btnClear.setBounds(119, 287, 89, 23);
@@ -187,7 +187,7 @@ public class RecipeDatabase {
 		JButton btnExit = new JButton("Exit");
 		btnExit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
+				System.exit(0);
 			}
 		});
 		btnExit.setBounds(218, 287, 89, 23);
