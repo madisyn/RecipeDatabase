@@ -206,7 +206,44 @@ public class RecipeDatabase {
 		panel_1.add(labelDishID);
 		
 		txtDishID = new JTextField();
+		txtDishID.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				try {
+			          
+		            String id = txtDishID.getText();
+		 
+		                pst = con.prepareStatement("select name,type,difficulty from recipes where id = ?");
+		                pst.setString(1, id);
+		                ResultSet rs = pst.executeQuery();
+		 
+		           if(rs.next()==true)
+		            {
+		              
+		                String name = rs.getString(1);
+		                String type = rs.getString(2);
+		                String difficulty = rs.getString(3);
+		                
+		                txtdname.setText(name);
+		                txtmtype.setText(type);
+		                txtdiff.setText(difficulty);
+		                
+		                
+		            }  
+		            else
+		            {
+		             txtdname.setText("");
+		             txtmtype.setText("");
+		             txtdiff.setText("");
+		            }
 
+		        }
+			catch (SQLException ex) {
+			          
+			        }
+		}
+
+		});
 		txtDishID.setBounds(86, 21, 144, 20);
 		txtDishID.setColumns(10);
 		panel_1.add(txtDishID);
