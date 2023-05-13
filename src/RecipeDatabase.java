@@ -176,12 +176,18 @@ public class RecipeDatabase {
 		frame.getContentPane().add(btnSave);
 		
 		JButton btnClear = new JButton("Clear");
+		btnClear.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+
+			}
+		});
 		btnClear.setBounds(119, 287, 89, 23);
 		frame.getContentPane().add(btnClear);
 		
 		JButton btnExit = new JButton("Exit");
 		btnExit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+
 			}
 		});
 		btnExit.setBounds(218, 287, 89, 23);
@@ -285,6 +291,34 @@ public class RecipeDatabase {
 		frame.getContentPane().add(btnUpdate);
 		
 		JButton btnDelete = new JButton("Delete");
+		btnDelete.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				int id;
+				
+				id = Integer.parseInt(txtDishID.getText());
+
+				
+				try {
+					pst = con.prepareStatement("delete from recipes where id =?");
+					pst.setInt(1,  id);
+					pst.executeUpdate();
+					
+					JOptionPane.showMessageDialog(null, "Record Deleted!");
+					table_load();
+					txtdname.setText("");
+					txtmtype.setText("");
+					txtdiff.setText("");
+					txtdname.requestFocus();
+				}
+				catch(SQLException el){
+					el.printStackTrace();
+				}
+				
+				
+				
+			}
+		});
 		btnDelete.setBounds(525, 340, 89, 23);
 		frame.getContentPane().add(btnDelete);
 	}
