@@ -26,6 +26,7 @@ public class RecipeDatabase {
 	private JTextField txtdname;
 	private JTextField txtmtype;
 	private JTextField txtdiff;
+	private JTextField txtIngreds;
 	private JTable table;
 	private JTextField txtDishID;
 
@@ -105,7 +106,7 @@ public class RecipeDatabase {
 	 */
 	private void initialize() {
 		frame = new JFrame();
-		frame.setBounds(100, 100, 709, 432);
+		frame.setBounds(100, 100, 1008, 493);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
@@ -116,7 +117,7 @@ public class RecipeDatabase {
 		
 		JPanel panel = new JPanel();
 		panel.setBorder(new TitledBorder(null, "Registration", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		panel.setBounds(10, 80, 316, 196);
+		panel.setBounds(10, 80, 423, 241);
 		frame.getContentPane().add(panel);
 		panel.setLayout(null);
 		
@@ -135,6 +136,11 @@ public class RecipeDatabase {
 		labelDiff.setBounds(30, 136, 100, 27);
 		panel.add(labelDiff);
 		
+		JLabel labelIngredients = new JLabel("Ingredients");
+		labelIngredients.setFont(new Font("Tahoma", Font.BOLD, 14));
+		labelIngredients.setBounds(30, 181, 100, 27);
+		panel.add(labelIngredients);
+		
 		txtdname = new JTextField();
 		txtdname.setBounds(140, 34, 136, 20);
 		panel.add(txtdname);
@@ -150,6 +156,12 @@ public class RecipeDatabase {
 		txtdiff.setBounds(140, 141, 136, 20);
 		panel.add(txtdiff);
 		
+		
+		txtIngreds = new JTextField();
+		txtIngreds.setColumns(10);
+		txtIngreds.setBounds(140, 187, 273, 27);
+		panel.add(txtIngreds);
+		
 		JButton btnSave = new JButton("Save");
 		btnSave.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -158,26 +170,29 @@ public class RecipeDatabase {
 					JOptionPane.showMessageDialog(null, "Need a valid difficulty!");
 				}
 				else {
-					String dname, mtype;
-				int dif;
+					String dname, mtype, ingredients;
+					int dif;
 				
 				dname = txtdname.getText(); 
 				mtype = txtmtype.getText();
+				ingredients = txtIngreds.getText();
 				dif = Integer.parseInt(txtdiff.getText());
 				
 				
 				
 				try {
-					pst = con.prepareStatement("insert into recipes(name, type, difficulty)values(?, ?, ?)" );
+					pst = con.prepareStatement("insert into recipes(name, type, difficulty, Ingredients)values(?, ?, ?, ?)" );
 					pst.setString(1, dname);
 					pst.setString(2, mtype);
 					pst.setInt(3,  dif);
+					pst.setString(4,  ingredients);
 					pst.executeUpdate();
 					JOptionPane.showMessageDialog(null, "Record Added!");
 					table_load();
 					txtdname.setText("");
 					txtmtype.setText("");
 					txtdiff.setText("");
+					txtIngreds.setText("");
 					txtdname.requestFocus();
 				}
 				catch(SQLException el){
@@ -187,7 +202,7 @@ public class RecipeDatabase {
 
 			}
 		});
-		btnSave.setBounds(20, 287, 89, 23);
+		btnSave.setBounds(42, 331, 89, 23);
 		frame.getContentPane().add(btnSave);
 		
 		JButton btnClear = new JButton("Clear");
@@ -196,10 +211,11 @@ public class RecipeDatabase {
 				txtdname.setText("");
 				txtmtype.setText("");
 				txtdiff.setText("");
+				txtIngreds.setText("");
 				txtdname.requestFocus();
 			}
 		});
-		btnClear.setBounds(119, 287, 89, 23);
+		btnClear.setBounds(164, 331, 89, 23);
 		frame.getContentPane().add(btnClear);
 		
 		JButton btnExit = new JButton("Exit");
@@ -208,11 +224,11 @@ public class RecipeDatabase {
 				System.exit(0);
 			}
 		});
-		btnExit.setBounds(218, 287, 89, 23);
+		btnExit.setBounds(300, 331, 89, 23);
 		frame.getContentPane().add(btnExit);
 		
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(346, 80, 326, 230);
+		scrollPane.setBounds(456, 79, 500, 269);
 		frame.getContentPane().add(scrollPane);
 		
 		table = new JTable();
@@ -220,7 +236,7 @@ public class RecipeDatabase {
 		
 		JPanel panel_1 = new JPanel();
 		panel_1.setBorder(new TitledBorder(null, "Search", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		panel_1.setBounds(10, 321, 316, 61);
+		panel_1.setBounds(10, 364, 316, 61);
 		frame.getContentPane().add(panel_1);
 		panel_1.setLayout(null);
 		
@@ -237,7 +253,7 @@ public class RecipeDatabase {
 			          
 		            String id = txtDishID.getText();
 		 
-		                pst = con.prepareStatement("select name,type,difficulty from recipes where id = ?");
+		                pst = con.prepareStatement("select name,type,difficulty,Ingredients from recipes where id = ?");
 		                pst.setString(1, id);
 		                ResultSet rs = pst.executeQuery();
 		 
@@ -247,10 +263,12 @@ public class RecipeDatabase {
 		                String name = rs.getString(1);
 		                String type = rs.getString(2);
 		                String difficulty = rs.getString(3);
+		                String Ingredients = rs.getString(4);
 		                
 		                txtdname.setText(name);
 		                txtmtype.setText(type);
 		                txtdiff.setText(difficulty);
+		                txtIngreds.setText(Ingredients);
 		                
 		                
 		            }  
@@ -259,6 +277,7 @@ public class RecipeDatabase {
 		             txtdname.setText("");
 		             txtmtype.setText("");
 		             txtdiff.setText("");
+		             txtIngreds.setText("");
 		            }
 
 		        }
@@ -279,20 +298,23 @@ public class RecipeDatabase {
 					JOptionPane.showMessageDialog(null, "Need a valid difficulty!");
 				}
 				else {
-					String dname, mtype;
+					String dname, mtype, ingredients;
 					int dif, id;
 					
 					id = Integer.parseInt(txtDishID.getText());
 					dname = txtdname.getText(); 
 					mtype = txtmtype.getText();
 					dif = Integer.parseInt(txtdiff.getText());
+					ingredients = txtIngreds.getText();
 					
 					try {
-						pst = con.prepareStatement("update recipes set name  =? , type =?, difficulty =? where id = ?");
+						pst = con.prepareStatement("update recipes set name  =? , type =?, difficulty =?, Ingredients =? where id = ?");
 						pst.setString(1, dname);
 						pst.setString(2, mtype);
 						pst.setInt(3,  dif);
-						pst.setInt(4,  id);
+						pst.setString(4, ingredients);
+						pst.setInt(5,  id);
+						
 						pst.executeUpdate();
 						
 						JOptionPane.showMessageDialog(null, "Record Updated!");
@@ -300,6 +322,7 @@ public class RecipeDatabase {
 						txtdname.setText("");
 						txtmtype.setText("");
 						txtdiff.setText("");
+						txtIngreds.setText("");
 						txtdname.requestFocus();
 					}
 					catch(SQLException el){
@@ -311,7 +334,7 @@ public class RecipeDatabase {
 				
 			}
 		});
-		btnUpdate.setBounds(412, 340, 89, 23);
+		btnUpdate.setBounds(566, 365, 89, 23);
 		frame.getContentPane().add(btnUpdate);
 		
 		JButton btnDelete = new JButton("Delete");
@@ -333,6 +356,7 @@ public class RecipeDatabase {
 					txtdname.setText("");
 					txtmtype.setText("");
 					txtdiff.setText("");
+					txtIngreds.setText("");
 					txtdname.requestFocus();
 				}
 				catch(SQLException el){
@@ -343,7 +367,7 @@ public class RecipeDatabase {
 				
 			}
 		});
-		btnDelete.setBounds(525, 340, 89, 23);
+		btnDelete.setBounds(746, 365, 89, 23);
 		frame.getContentPane().add(btnDelete);
 	}
 }
