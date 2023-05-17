@@ -362,9 +362,7 @@ public class RecipeDatabase {
 				catch(SQLException el){
 					el.printStackTrace();
 				}
-				
-				
-				
+
 			}
 		});
 		btnDelete.setBounds(746, 365, 89, 23);
