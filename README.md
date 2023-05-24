@@ -15,7 +15,7 @@ Clear the input fields
 
 To use this Recipe Database System, you can download the project as a ZIP file from GitHub or clone the repository to your local machine.
 
-After downloading or cloning the repository, you can open the project in your IDE and run the RecipeDatabaseSystem.java file to start the program.
+After downloading or cloning the repository, you can open the project in your IDE and run the RecipeDatabase.java file to start the program.
 
 ## Usage
 
